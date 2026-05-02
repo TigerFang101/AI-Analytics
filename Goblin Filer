@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Goblin Filer</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1b2b1b;
+      color: #e8ffe8;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #7CFC00;
+    }
+
+    textarea {
+      width: 80%;
+      height: 150px;
+      margin: 10px;
+      background-color: #2f4f2f;
+      color: white;
+      border: 1px solid #7CFC00;
+      border-radius: 6px;
+      padding: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #228B22;
+      color: white;
+      border: none;
+      border-radius: 6px;
+    }
+
+    button:hover {
+      background-color: #32CD32;
+    }
+
+    #output {
+      margin-top: 20px;
+      text-align: left;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      background: #2e3d2e;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #7CFC00;
+    }
+
+    .goblin img {
+      width: 150px;
+      border-radius: 12px;
+      border: 2px solid #7CFC00;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>The Goblin Filer</h1>
+
+<p>Paste your MTG card list below and let the goblin organize it for you!</p>
+
+<!-- Goblin Image -->
+<div class="goblin">
+  <!-- Make sure Goblin.png is in the SAME folder as this HTML file -->
+  <img src="Goblin.png" alt="Goblin with glasses holding cards">
+</div>
+
+<textarea id="cardInput" placeholder="Enter cards (one per line)..."></textarea><br>
+
+<button onclick="organizeCards()">Organize My Cards</button>
+
+<div id="output"></div>
+
+<script>
+// Example card database (simplified)
+const cardDatabase = {
+  "Lightning Bolt": { color: "Red", type: "Instant", set: "Alpha" },
+  "Counterspell": { color: "Blue", type: "Instant", set: "Ice Age" },
+  "Llanowar Elves": { color: "Green", type: "Creature", set: "Dominaria" },
+  "Dark Ritual": { color: "Black", type: "Instant", set: "Alpha" },
+  "Serra Angel": { color: "White", type: "Creature", set: "Core Set" }
+};
+
+// Main function to organize cards
+function organizeCards() {
+  const input = document.getElementById("cardInput").value;
+  const cards = input.split("\n").map(c => c.trim()).filter(c => c);
+
+  let organized = {};
+
+  cards.forEach(card => {
+    let data = cardDatabase[card];
+
+    if (!data) return;
+
+    // Group by color
+    if (!organized[data.color]) {
+      organized[data.color] = {};
+    }
+
+    // Then by type
+    if (!organized[data.color][data.type]) {
+      organized[data.color][data.type] = [];
+    }
+
+    organized[data.color][data.type].push(card + " (" + data.set + ")");
+  });
+
+  displayResults(organized);
+}
+
+// Display results
+function displayResults(data) {
+  let output = "<h2>Organized Collection</h2>";
+
+  for (let color in data) {
+    output += `<h3>${color}</h3>`;
+
+    for (let type in data[color]) {
+      output += `<strong>${type}</strong><ul>`;
+
+      data[color][type].forEach(card => {
+        output += `<li>${card}</li>`;
+      });
+
+      output += "</ul>";
+    }
+  }
+
+  document.getElementById("output").innerHTML = output;
+}
+</script>
+
+</body>
+</html>
